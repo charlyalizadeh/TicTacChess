@@ -1,0 +1,7 @@
+Chess Programming Wiki: https://www.chessprogramming.org/Main_Page
+Binary converter: https://www.binaryhexconverter.com/binary-to-decimal-converter
+YT video on Bitboard: https://www.youtube.com/watch?v=MzfQ8H16n0M&
+Some blog about chess programming: https://peterellisjones.com/posts/generating-legal-chess-moves-efficiently/
+Paper on Magic Bitboard: http://pradu.us/old/Nov27_2008/Buzz/research/magic/Bitboards.pdf
+Article on Magic Bitboard: https://essays.jwatzman.org/essays/chess-move-generation-with-magic-bitboards.html
+Chess Programming wiki page on magic bitboard: https://www.chessprogramming.org/Magic_Bitboards
