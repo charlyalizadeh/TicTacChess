@@ -22,11 +22,31 @@ pub struct GameBoard {
     rook: u32
 }
 
+impl GameBoard {
+    pub fn new() -> Self {
+        GameBoard {
+            pawn: 0,
+            knight: 0,
+            bishop: 0,
+            rook: 0
+        }
+    }
+
+    pub fn set_piece(&mut self, piece: Piece, coord: Point2<u8>) {
+        match piece {
+            Piece::Pawn => set_board(&mut self.pawn, coord),
+            Piece::Knight => set_board(&mut self.knight, coord),
+            Piece::Bishop => set_board(&mut self.bishop, coord),
+            Piece::Rook => set_board(&mut self.rook, coord)
+        }
+    }
+}
+
 impl fmt::Display for GameBoard {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // TODO: Clean this function
         // I understand lifetime but I wonder what other solution I have than assigning the value
-        // of the reverse format to a variable
+        // of the format to a variable
         let pawn_str = &format!("{:020b}", self.pawn);
         let knight_str = &format!("{:020b}", self.knight);
         let bishop_str = &format!("{:020b}", self.bishop);
@@ -47,24 +67,5 @@ impl fmt::Display for GameBoard {
             display.push_str("\n");
         }
         write!(f, "{}", display)
-    }
-}
-
-impl GameBoard {
-    pub fn new() -> Self {
-        GameBoard {
-            pawn: 0,
-            knight: 0,
-            bishop: 0,
-            rook: 0
-        }
-    }
-    pub fn set_piece(&mut self, piece: Piece, coord: Point2<u8>) {
-        match piece {
-            Piece::Pawn => set_board(&mut self.pawn, coord),
-            Piece::Knight => set_board(&mut self.knight, coord),
-            Piece::Bishop => set_board(&mut self.bishop, coord),
-            Piece::Rook => set_board(&mut self.rook, coord)
-        }
     }
 }
