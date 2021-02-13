@@ -3,6 +3,6 @@ use nalgebra::Point2;
 mod movegen;
 
 fn main() {
-    let mask = movegen::MoveGen::gen_rook_mask();
+    let mut mask = movegen::MoveGen::gen_bishop_mask();
     println!("{:?}", mask);
 }
