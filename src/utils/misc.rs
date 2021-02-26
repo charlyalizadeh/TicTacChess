@@ -1,5 +1,3 @@
-use nalgebra::Point2;
-
 pub fn split_str_chunks<'a>(string: &'a str, chunk_size: usize) -> Vec<&'a str> {
     let nb_split = string.len() / chunk_size;
     let mut split_string: Vec<&str> = Vec::new();
@@ -9,10 +7,11 @@ pub fn split_str_chunks<'a>(string: &'a str, chunk_size: usize) -> Vec<&'a str> 
     return split_string;
 }
 
-pub fn set_board(board: &mut u32, coord: Point2<u8>) {
+pub fn set_board(board: &mut u32, index: u32) {
     // We don't need to take into account the original value in board for the game because
     // a given board/piece can only have on bit set to 1 at the same time
-    *board = 1 << coord.y * 5 + coord.x;
+    // We add `index / 4` because of the "hidden" column.
+    *board = 1 << index + index / 4;
 }
 
 pub fn reverse_string(string: &str) -> String {

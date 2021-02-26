@@ -1,8 +1,20 @@
+mod attacks;
+mod pieces;
+mod constants;
+mod utils;
 mod board;
-use nalgebra::Point2;
-mod movegen;
+pub mod find_magic;
+use pieces::BoardPiece;
 
 fn main() {
-    let mut mask = movegen::MoveGen::gen_bishop_mask();
-    println!("{:?}", mask);
+    let game_board = board::GameBoard {
+        pieces: [
+            BoardPiece::Pawn(0),
+            BoardPiece::Knight(0),
+            BoardPiece::Bishop(0),
+            BoardPiece::Rook(0)
+        ]
+    };
+    println!("{}", game_board);
 }
+
