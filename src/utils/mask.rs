@@ -7,6 +7,12 @@ pub fn remove_msb(nb: u32, shift: u8) -> u32 {
 pub fn remove_lsb(nb: u32, shift: u8) -> u32 {
     (nb >> shift) << shift
 }
+pub fn top_one(nb: u32) -> u32 {
+    nb << 5
+}
+pub fn bottom_one(nb: u32) -> u32 {
+    nb >> 5
+}
 pub fn right_one(nb: u32) -> u32 {
     nb << 1 & 1014750
 }
@@ -168,7 +174,6 @@ pub fn gen_raycast_bottomleft(mask_border: bool) -> [u32;16] {
     }
     raycast
 }
-
 pub fn gen_ray_attacks(mask_border: bool) -> [[u32;16];8] {
     [
         gen_raycast_top(mask_border),
@@ -180,4 +185,80 @@ pub fn gen_ray_attacks(mask_border: bool) -> [[u32;16];8] {
         gen_raycast_left(mask_border),
         gen_raycast_topleft(mask_border),
     ]
+}
+
+//        noNoWe    noNoEa
+//            +9    +11
+//             |     |
+//noWeWe   +3__|     |__+7  noEaEa
+//              \   /
+//               >0<
+//           __ /   \ __
+//soWeWe  -7   |     |  -3  soEaEa
+//             |     |
+//            -11   -9
+//        soSoWe    soSoEa
+fn gen_knight_mask(sq: usize) -> u32 {
+    let index: u32 = 1 << (sq + sq / 4);
+    let mask =  (index << 11 & 473088) |
+                (index << 7 & 405900) |
+                (index >> 3 & 12684) |
+                (index >> 9 & 462) |
+                (index >> 11 & 231) |
+                (index >> 7 & 3171) |
+                (index << 3 & 101472) |
+                (index << 9 & 236544);
+    mask
+}
+pub fn gen_knight_masks() -> [u32;16] {
+    let mut masks: [u32;16] = [0;16];
+    for i in 0..16 {
+        masks[i] = gen_knight_mask(i);
+    }
+    masks
+}
+
+fn gen_pawn_attack_top(sq: usize) -> u32 {
+    let sq = sq + sq / 4;
+    match sq {
+       0..=3 => 0,
+       4..=5 => (1 << (sq + 4)) & 507375,
+       _ => (1 << (sq + 4) | 1 << (sq + 6)) & 507375
+    }
+}
+fn gen_pawn_attack_bottom(sq: usize) -> u32 {
+    let sq = sq + sq / 4;
+    match sq {
+       0..=3 => 0,
+       4..=5 => (1 << (sq - 4)) & 507375,
+       _ => (1 << (sq - 4) | 1 << (sq - 6)) & 507375
+    }
+}
+pub fn gen_pawn_masks_top() -> [u32;16] {
+    let mut masks: [u32;16] = [0;16];
+    for i in 0..12 {
+        masks[i] = top_one(1 << (i + i / 4));
+    }
+    masks
+}
+pub fn gen_pawn_masks_bottom() -> [u32;16] {
+    let mut masks: [u32;16] = [0;16];
+    for i in 4..16 {
+        masks[i] = bottom_one(1 << (i + i / 4));
+    }
+    masks
+}
+pub fn gen_pawn_attacks_top() -> [u32;16] {
+    let mut masks: [u32;16] = [0;16];
+    for i in 0..16 {
+        masks[i] = gen_pawn_attack_top(i);
+    }
+    masks
+}
+pub fn gen_pawn_attacks_bottom() -> [u32;16] {
+    let mut masks: [u32;16] = [0;16];
+    for i in 0..16 {
+        masks[i] = gen_pawn_attack_bottom(i);
+    }
+    masks
 }

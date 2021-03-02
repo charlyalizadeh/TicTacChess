@@ -1,8 +1,8 @@
-pub fn split_str_chunks<'a>(string: &'a str, chunk_size: usize) -> Vec<&'a str> {
+pub fn split_str_chunks<'a>(string: &'a str, chunk_size: usize) -> Vec<String> {
     let nb_split = string.len() / chunk_size;
-    let mut split_string: Vec<&str> = Vec::new();
+    let mut split_string: Vec<String> = Vec::new();
     for i in (0..(nb_split * chunk_size)).step_by(chunk_size) {
-        split_string.push(&string[i..i + chunk_size]);
+        split_string.push(string[i..i + chunk_size].to_owned());
     }
     return split_string;
 }

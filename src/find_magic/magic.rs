@@ -1,7 +1,8 @@
 use std::fmt;
+use std::convert::TryInto;
 use rand::Rng;
 use crate::find_magic::blockers;
-use crate::pieces::IndexPiece;
+use crate::find_magic::pieces::IndexPiece;
 use crate::attacks;
 
 #[derive(Debug)]
@@ -59,11 +60,17 @@ pub fn find_magic(piece: &IndexPiece) -> Magic {
     }
     Magic { magic, database, shift: bits }
 }
-pub fn find_all_magic(rook: bool) -> Vec<Magic> {
+pub fn find_all_magic(rook: bool) -> [Magic;16] {
     let mut magics = vec![Magic::new();16];
     for i in 0..16 {
         let piece = if rook { IndexPiece::Rook(i) } else { IndexPiece::Bishop(i) };
         magics[i] = find_magic(&piece);
     }
     magics
+        .try_into()
+        .unwrap_or_else(|v: Vec<Magic>| panic!("Expected a Vec of length 16 but it was {}", v.len()))
+}
+
+pub fn get_move(sq: u32, magic: &Magic) -> u32 {
+    magic.database[(sq.wrapping_mul(magic.magic) >> magic.shift) as usize]
 }

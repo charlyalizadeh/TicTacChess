@@ -1,20 +1,13 @@
+#![allow(dead_code)]
+
 mod attacks;
-mod pieces;
 mod constants;
 mod utils;
-mod board;
+mod game;
 pub mod find_magic;
-use pieces::BoardPiece;
 
 fn main() {
-    let game_board = board::GameBoard {
-        pieces: [
-            BoardPiece::Pawn(0),
-            BoardPiece::Knight(0),
-            BoardPiece::Bishop(0),
-            BoardPiece::Rook(0)
-        ]
-    };
-    println!("{}", game_board);
+    let pawn_masks = utils::mask::gen_pawn_attacks_bottom();
+    println!("{:?}", pawn_masks);
 }
 

@@ -1,6 +1,6 @@
 use crate::constants::RAY_ATTACKS;
 use crate::utils::bitscan;
-use crate::pieces::IndexPiece;
+use crate::find_magic::pieces::IndexPiece;
 
 fn get_positive_attacks(occ: u32, direction: usize, square: usize) -> u32 {
     let mut attacks: u32 = RAY_ATTACKS[direction][square];

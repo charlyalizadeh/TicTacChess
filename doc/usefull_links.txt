@@ -5,3 +5,4 @@ Some blog about chess programming: https://peterellisjones.com/posts/generating-
 Paper on Magic Bitboard: http://pradu.us/old/Nov27_2008/Buzz/research/magic/Bitboards.pdf
 Article on Magic Bitboard: https://essays.jwatzman.org/essays/chess-move-generation-with-magic-bitboards.html
 Chess Programming wiki page on magic bitboard: https://www.chessprogramming.org/Magic_Bitboards
+Article on Magic bitboard: vicki-chess.blogspot.com/2013/04/magics.html
