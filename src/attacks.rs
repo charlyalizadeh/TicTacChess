@@ -1,12 +1,12 @@
 use crate::constants::RAY_ATTACKS;
-use crate::utils::bitscan;
+use crate::utils::bitutils;
 use crate::find_magic::pieces::IndexPiece;
 
 fn get_positive_attacks(occ: u32, direction: usize, square: usize) -> u32 {
     let mut attacks: u32 = RAY_ATTACKS[direction][square];
     let blockers: u32 = attacks & occ;
     if blockers != 0 {
-        let mut square = bitscan::bit_scan_forward(blockers as u64) as usize;
+        let mut square = bitutils::bit_scan_forward(blockers as u64) as usize;
         square -= square / 5;
         attacks ^= RAY_ATTACKS[direction][square];
     }
@@ -17,7 +17,7 @@ fn get_negative_attacks(occ: u32, direction: usize, square: usize) -> u32 {
     let mut attacks: u32 = RAY_ATTACKS[direction][square];
     let blockers: u32 = attacks & occ;
     if blockers != 0 {
-        let mut square = bitscan::bit_scan_reverse(blockers as u64) as usize;
+        let mut square = bitutils::bit_scan_reverse(blockers as u64) as usize;
         square -= square / 5;
         attacks ^= RAY_ATTACKS[direction][square];
     }

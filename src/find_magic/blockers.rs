@@ -1,5 +1,5 @@
 use crate::constants::RAY_ATTACKS;
-use crate::utils::bitscan;
+use crate::utils::bitutils;
 use crate::find_magic::pieces::IndexPiece;
 
 
@@ -39,7 +39,7 @@ fn get_set_bits_index(n: u32) -> Vec<u32> {
     let mut n = n;
     let mut bits_index = Vec::new();
     while n != 0 {
-        let index = bitscan::bit_scan_forward(n as u64);
+        let index = bitutils::bit_scan_forward(n as u64);
         bits_index.push(index as u32);
         n ^= 1 << index;
     }

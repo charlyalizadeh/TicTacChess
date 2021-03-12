@@ -1,25 +1,4 @@
-// Ressources used for the following functions:
-//     * https://www.chessprogramming.org/On_an_empty_Board
-//     * https://www.chessprogramming.org/General_Setwise_Operations
-pub fn remove_msb(nb: u32, shift: u8) -> u32 {
-    (nb << shift) >> shift
-}
-pub fn remove_lsb(nb: u32, shift: u8) -> u32 {
-    (nb >> shift) << shift
-}
-pub fn top_one(nb: u32) -> u32 {
-    nb << 5
-}
-pub fn bottom_one(nb: u32) -> u32 {
-    nb >> 5
-}
-pub fn right_one(nb: u32) -> u32 {
-    nb << 1 & 1014750
-}
-pub fn left_one(nb: u32) -> u32 {
-    nb >> 1 & 507375
-}
-
+use crate::utils::bitutils;
 // Positive rays
 pub fn gen_raycast_top(mask_border: bool) -> [u32;16] {
     let mut cast = 33824;
@@ -40,7 +19,7 @@ pub fn gen_raycast_top(mask_border: bool) -> [u32;16] {
         cast <<= 1;
         // If some bits "above" the board are set we want to remove them.
         if cast > limit  {
-            cast = remove_msb(cast, shift);
+            cast = bitutils::remove_msb(cast, shift);
         }
     }
     raycast
@@ -59,7 +38,7 @@ pub fn gen_raycast_right(mask_border: bool) -> [u32;16] {
             ne <<= 5;
             //ne = remove_msb(ne, 12);
         }
-        cast = right_one(cast);
+        cast = bitutils::right_one(cast);
     }
     raycast
 }
@@ -75,9 +54,9 @@ pub fn gen_raycast_topright(mask_border: bool) -> [u32;16] {
             }
             raycast[f + 4 * (i / 5)] = ne & limit;
             ne <<= 5;
-            ne = remove_msb(ne, 12);
+            ne = bitutils::remove_msb(ne, 12);
         }
-        cast = right_one(cast);
+        cast = bitutils::right_one(cast);
     }
     raycast
 }
@@ -93,9 +72,9 @@ pub fn gen_raycast_topleft(mask_border: bool) -> [u32;16] {
             }
             raycast[(3 - f) + 4 * (i / 5)] = ne & limit;
             ne <<= 5;
-            ne = remove_msb(ne, 12);
+            ne = bitutils::remove_msb(ne, 12);
         }
-        cast = left_one(cast);
+        cast = bitutils::left_one(cast);
     }
     raycast
 }
@@ -115,7 +94,7 @@ pub fn gen_raycast_bottom(mask_border: bool) -> [u32;16] {
         }
         cast >>= 1;
         if mask_border && [4, 8].contains(&j) {
-            cast = remove_lsb(cast, 4);
+            cast = bitutils::remove_lsb(cast, 4);
         }
     }
     raycast
@@ -132,9 +111,9 @@ pub fn gen_raycast_left(mask_border: bool) -> [u32;16] {
             }
             raycast[(3 - f) + 4 * (3 - (i / 5))] = ne & limit;
             ne >>= 5;
-            ne = remove_msb(ne, 12);
+            ne = bitutils::remove_msb(ne, 12);
         }
-        cast = left_one(cast);
+        cast = bitutils::left_one(cast);
     }
     raycast
 }
@@ -150,9 +129,9 @@ pub fn gen_raycast_bottomright(mask_border: bool) -> [u32;16] {
             }
             raycast[f + 4 * (3 - (i / 5))] = ne & limit;
             ne >>= 5;
-            ne = remove_msb(ne, 12);
+            ne = bitutils::remove_msb(ne, 12);
         }
-        cast = right_one(cast);
+        cast = bitutils::right_one(cast);
     }
     raycast
 }
@@ -168,9 +147,9 @@ pub fn gen_raycast_bottomleft(mask_border: bool) -> [u32;16] {
             }
             raycast[(3 - f) + 4 * (3 - (i / 5))] = ne & limit;
             ne >>= 5;
-            ne = remove_msb(ne, 12);
+            ne = bitutils::remove_msb(ne, 12);
         }
-        cast = left_one(cast);
+        cast = bitutils::left_one(cast);
     }
     raycast
 }
@@ -221,30 +200,29 @@ pub fn gen_knight_masks() -> [u32;16] {
 fn gen_pawn_attack_top(sq: usize) -> u32 {
     let sq = sq + sq / 4;
     match sq {
-       0..=3 => 0,
-       4..=5 => (1 << (sq + 4)) & 507375,
+       15..=18 => 0, // Top row
        _ => (1 << (sq + 4) | 1 << (sq + 6)) & 507375
     }
 }
 fn gen_pawn_attack_bottom(sq: usize) -> u32 {
     let sq = sq + sq / 4;
     match sq {
-       0..=3 => 0,
-       4..=5 => (1 << (sq - 4)) & 507375,
+       0..=3 => 0, // Bottom row
+       4..=5 => (1 << (sq - 4)) & 507375, // Can't have sq - 6 when sq < 4
        _ => (1 << (sq - 4) | 1 << (sq - 6)) & 507375
     }
 }
 pub fn gen_pawn_masks_top() -> [u32;16] {
     let mut masks: [u32;16] = [0;16];
     for i in 0..12 {
-        masks[i] = top_one(1 << (i + i / 4));
+        masks[i] = bitutils::top_one(1 << (i + i / 4));
     }
     masks
 }
 pub fn gen_pawn_masks_bottom() -> [u32;16] {
     let mut masks: [u32;16] = [0;16];
     for i in 4..16 {
-        masks[i] = bottom_one(1 << (i + i / 4));
+        masks[i] = bitutils::bottom_one(1 << (i + i / 4));
     }
     masks
 }
