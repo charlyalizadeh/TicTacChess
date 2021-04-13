@@ -70,7 +70,7 @@ We can see in the original board is not a winning board however our algorithm wi
 Ghost column
 ```
 
-So in order to use board with a ghost column we need to take size above 16 bits integer which is 32 bits integer, here an exemple:
+So in order to use board with a ghost column we need to take the size above 16 bits integer which is 32 bits integer, here an exemple:
 
 ```
  ┏━━━┳━━━┳━━━┳━━━┓
