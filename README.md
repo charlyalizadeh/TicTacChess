@@ -32,7 +32,7 @@ In the following board an upper letter represents a white piece and a lower lett
 ```
 
 ```
-                            00000000<--End of the ingteger
+                            00000000<--End of the integer
                             10000110
                             00000100
                             01010001
