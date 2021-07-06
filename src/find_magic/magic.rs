@@ -1,8 +1,8 @@
 use std::fmt;
 use std::convert::TryInto;
 use rand::Rng;
-use crate::find_magic::blockers;
-use crate::find_magic::pieces::IndexPiece;
+use super::blockers;
+use super::pieces::IndexPiece;
 use crate::attacks;
 
 #[derive(Debug)]
@@ -22,7 +22,7 @@ impl Magic {
 }
 impl fmt::Display for Magic {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "magic: {}\nshift: {}\ndatabase: {:?}", self.magic, self.shift, self.database)
+        write!(f, "magic: {:?}\nshift: {:?}\ndatabase: {:?}", self.magic, self.shift, self.database)
     }
 }
 impl Clone for Magic {
@@ -38,8 +38,8 @@ impl Clone for Magic {
 
 pub fn find_magic(piece: &IndexPiece) -> Magic {
     let blocker = blockers::gen_blocker_boards(&piece);
-    let bits = (blocker.len() as f64).log2() as u32 + 1;
-    let mut database = vec![0;usize::pow(2, bits)];
+    let bits = (blocker.len() as f64).log2() as u32;
+    let mut database = vec![0;blocker.len() as usize];
     let mut rng = rand::thread_rng();
     let mut magic = rng.gen::<u32>();
     loop {
@@ -48,7 +48,8 @@ pub fn find_magic(piece: &IndexPiece) -> Magic {
             let move_board = attacks::get_attacks(*board, &piece);
             let index: u32 = board.wrapping_mul(magic) >> (32 - bits);
             if database[index as usize] != 0 && database[index as usize] != move_board {
-                failed = false;
+                failed = true;
+                break;
             }
             else {
                 database[index as usize] = move_board;
@@ -72,5 +73,5 @@ pub fn find_all_magic(rook: bool) -> [Magic;16] {
 }
 
 pub fn get_move(sq: u32, magic: &Magic) -> u32 {
-    magic.database[(sq.wrapping_mul(magic.magic) >> magic.shift) as usize]
+    magic.database[(sq.wrapping_mul(magic.magic) >> (32 - magic.shift)) as usize]
 }
