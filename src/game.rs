@@ -1,10 +1,10 @@
 use std::fmt;
+use crate::find_magic::{ find_all_magic, Magic };
 use crate::utils::misc::{
     split_str_chunks,
     set_board,
     reverse_string,
 };
-use crate::find_magic::magic::{ find_all_magic, Magic };
 
 #[repr(u8)]
 pub enum Piece {
