@@ -32,7 +32,7 @@ In the following board an upper letter represents a white piece and a lower lett
 ```
 
 ```
-                            00000000<--End of the ingteger
+                            00000000<--End of the integer
                             10000110
                             00000100
                             01010001
@@ -70,7 +70,7 @@ We can see in the original board is not a winning board however our algorithm wi
 Ghost column
 ```
 
-So in order to use board with a ghost column we need to take size above 16 bits integer which is 32 bits integer, here an exemple:
+So in order to use board with a ghost column we need to take the size above 16 bits integer which is 32 bits integer, here an exemple:
 
 ```
  ┏━━━┳━━━┳━━━┳━━━┓
