@@ -1,6 +1,6 @@
 use crate::constants::RAY_ATTACKS;
 use crate::utils::bitutils;
-use crate::find_magic::pieces::IndexPiece;
+use super::pieces::IndexPiece;
 
 
 pub fn gen_blocker_boards(piece: &IndexPiece) -> Vec<u32> {
