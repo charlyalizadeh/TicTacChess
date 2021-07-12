@@ -56,19 +56,6 @@ And when I'll talk about bitboard more specifically I'll use the following repre
 start of the integer --> 11111111
 
 where . corresponds to a 0 in the 64-bits integer
-
-
-
-How the integer is used as a board:
-
-  end of the integer --> <<<<<<<<
-                         >>>>>>>^
-                         ^<<<<<<<
-                         >>>>>>>^
-                         ^<<<<<<<
-                         >>>>>>>^
-                         ^<<<<<<<
-start of the integer --> >>>>>>>^
 ```
 
 This first part explains the motivation behind magic bitboards, if you're only here for a tutorial you can skip to the [next part](#how).
