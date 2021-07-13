@@ -46,7 +46,7 @@ Description:
 
 And when I'll talk about bitboard more specifically I'll use the following representation
 ```
-  end of the integer --> 11111111
+                         11111111 <-- end of the integer
                          11111111
                          ........
                          ........
