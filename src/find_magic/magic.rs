@@ -3,7 +3,7 @@ use std::convert::TryInto;
 use rand::Rng;
 use super::blockers;
 use super::pieces::IndexPiece;
-use crate::attacks;
+use super::slide_attacks;
 
 #[derive(Debug)]
 pub struct Magic {
@@ -45,7 +45,7 @@ pub fn find_magic(piece: &IndexPiece) -> Magic {
     loop {
         let mut failed = false;
         for board in blocker.iter() {
-            let move_board = attacks::get_attacks(*board, &piece);
+            let move_board = slide_attacks::get_slide_attacks(*board, &piece);
             let index: u32 = board.wrapping_mul(magic) >> (32 - bits);
             if database[index as usize] != 0 && database[index as usize] != move_board {
                 failed = true;
