@@ -1,43 +1,63 @@
 use std::time::Duration;
 use std::thread;
-use rand::{thread_rng, Rng};
 use sfml::{
-    audio::{Sound, SoundBuffer},
     graphics::{
         Color, Font, RectangleShape, RenderTarget, RenderWindow, Shape, Text,
-        Transformable, Image, Sprite, Texture
+        Transformable, Sprite, Texture
     },
-    system::{Clock, Time, Vector2f},
-    window::{ContextSettings, Event, Key, Style, mouse::Button},
+    system::{Vector2f},
+    window::{ContextSettings, Event, Style},
 };
 use std::{
-    env, f32::consts::PI, fs::File,
     collections::HashMap,
-    ops::DerefMut,
-    ops::Deref
 };
 use crate::game::{ Game,
                    apply_move_algebraic, apply_move,
                    get_best_move
 };
 
+pub struct Menu<'a> {
+    choices: Vec<&'a str>,
+    current_choice: usize
+}
+
+impl Menu<'_> {
+    fn get_choice(&self) -> &str {
+        self.choices[self.current_choice]
+    }
+    fn go_down(&mut self) {
+        if self.current_choice == self.choices.len() - 1 {
+            self.current_choice = 0;
+        }
+        else {
+            self.current_choice += 1;
+        }
+    }
+    fn go_up() {
+    }
+}
+
 pub struct BoardGUI {
     dim: [u32;2],
+    depth: u32,
 }
 
 impl BoardGUI {
     pub fn new(dim: [u32;2]) -> Self {
         BoardGUI {
             dim: dim,
+            depth: 4,
         }
     }
     pub fn run(&self) {
         // Create the game
         let mut game = Game::new();
         let mut round = 1;
+        let mut winner = "None";
+        let mut game_over = false;
 
         // Create the window
-        let mut context_settings = ContextSettings::default();
+        let context_settings = ContextSettings::default();
         let mut window = RenderWindow::new(
             (self.dim[0], self.dim[1]),
             "SFML TicTacChess",
@@ -48,7 +68,6 @@ impl BoardGUI {
 
         // Create the border of the board
         let square_size = Vector2f::new(((self.dim[0] - 18) / 4) as f32, ((self.dim[1] - 60) / 4) as f32);
-        println!("{:?}", square_size);
         // TODO: dont be lazy and find the correct way to do this
         let mut squares: [RectangleShape;16] = [
             RectangleShape::new(), RectangleShape::new(), RectangleShape::new(), RectangleShape::new(),
@@ -60,7 +79,6 @@ impl BoardGUI {
         let colors = [Color::rgb(154, 99, 43), Color::rgb(205, 165, 96)];
         for i in 0..4 {
             for j in 0..4 {
-                println!("{:?}", square_size);
                 squares[i * 4 + j].set_size(square_size);
                 squares[i * 4 + j].set_outline_thickness(3.);
                 squares[i * 4 + j].set_outline_color(Color::BLACK);
@@ -118,8 +136,19 @@ impl BoardGUI {
         apply_move(&mut game.player2, &mut game.player1, best_move, &game.bishop_magics, &game.rook_magics);
 
         // Main loop
-        loop {
+        while !game_over {
             while let Some(event) = window.poll_event() {
+                if round == 0 {
+                    round = 1;
+                    let best_move = get_best_move(4, &game.player2, &game.player1, &game.bishop_magics, &game.rook_magics);
+                    apply_move(&mut game.player2, &mut game.player1, best_move, &game.bishop_magics, &game.rook_magics);
+                    string = String::from("Enter your move here.");
+                    if game.player2.is_terminal() {
+                        winner = "player2";
+                        game_over = true;
+                        break;
+                    }
+                }
                 match event {
                     Event::Closed => window.close(),
                     Event::TextEntered { unicode } => {
@@ -139,9 +168,12 @@ impl BoardGUI {
                                 string = String::from("Move invalid!");
                             }
                             else {
-                                let best_move = get_best_move(4, &game.player2, &game.player1, &game.bishop_magics, &game.rook_magics);
-                                apply_move(&mut game.player2, &mut game.player1, best_move, &game.bishop_magics, &game.rook_magics);
-                                string = String::from("Enter your move here.")
+                                if game.player1.is_terminal() {
+                                    winner = "player1";
+                                    game_over = true;
+                                    break;
+                                }
+                                round = 0;
                             }
                         }
                         else if unicode != 0x16 as char && unicode != 0x03 as char {
@@ -222,6 +254,23 @@ impl BoardGUI {
             }
             window.display();
             //thread::sleep(Duration::from_millis(1000)) 
+        }
+        let end_string = if winner == "player1" { String::from("You won!") } else { String::from("You lost!") };
+        let end_text = Text::new(&end_string, &font, 50);
+        text.set_fill_color(Color::rgb(0, 0, 0));
+        text.set_outline_color(Color::rgb(0, 0, 0));
+        text.set_outline_thickness(5.);
+        text.set_origin(Vector2f::new(-(self.dim[0] as f32 / 2.), - (self.dim[1] as f32 / 2.)));
+        loop {
+            while let Some(event) = window.poll_event() {
+                match event {
+                    Event::Closed => window.close(),
+                    _ => {}
+                }
+            }
+            window.clear(colors[0]);
+            window.draw(&end_text);
+            window.display();
         }
     }
 }

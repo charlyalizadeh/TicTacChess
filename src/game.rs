@@ -3,11 +3,9 @@ use std::cmp;
 use crate::find_magic::{ find_all_magic, Magic, get_move };
 use crate::utils::misc::{
     split_str_chunks,
-    set_board,
     reverse_string,
 };
 use crate::constants;
-use crate::gui;
 
 // utils
 fn get_piece_index(piece: &char) -> usize {
@@ -140,7 +138,7 @@ impl Player {
         }
         nb_piece
     }
-    fn is_terminal(&self) -> bool {
+    pub fn is_terminal(&self) -> bool {
         let full_board = self.get_full_board();
         (full_board & full_board >> 1 & full_board >> 2  & full_board >> 3)  |
         (full_board & full_board >> 5 & full_board >> 10 & full_board >> 15) |
@@ -381,7 +379,7 @@ impl Game {
         display_rows
     }
     pub fn display_cli(&self) {
-        let mut display_rows = self.get_display_cli();
+        let display_rows = self.get_display_cli();
         for (i, row) in display_rows.iter().enumerate() {
             let row_number = match i {
                 0 => 4,
