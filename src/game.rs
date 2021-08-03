@@ -7,6 +7,7 @@ use crate::utils::misc::{
     reverse_string,
 };
 use crate::constants;
+use crate::gui;
 
 // utils
 fn get_piece_index(piece: &char) -> usize {
@@ -173,8 +174,8 @@ impl Player {
 // Game struct used to store the magic bitboard for the rook and the bishop and the players board
 pub struct Game {
     iteration: u64,
-    player1: Player,
-    player2: Player,
+    pub player1: Player,
+    pub player2: Player,
     pub rook_magics: [Magic;16],
     pub bishop_magics: [Magic;16],
 }
@@ -266,13 +267,13 @@ fn is_valid_move(bishop_magics: &[Magic;16], rook_magics: &[Magic;16], player: &
             if player.pawn_bottom {
                 let mut temp_attacks = constants::PAWN_ATTACKS_BOTTOM[board_index as usize] & opponent.get_full_board();
                 if coord_src[0] != 3 {
-                    temp_attacks |= (src >> 5) & !(player.get_full_board() & opponent.get_full_board())
+                    temp_attacks |= (src >> 5) & !(player.get_full_board() | opponent.get_full_board())
                 }
                 temp_attacks
             } else {
                 let mut temp_attacks = constants::PAWN_ATTACKS_TOP[board_index as usize] & opponent.get_full_board();
                 if coord_src[0] != 0 {
-                    temp_attacks |= (src << 5) & !(player.get_full_board() & opponent.get_full_board())
+                    temp_attacks |= (src << 5) & !(player.get_full_board() | opponent.get_full_board())
                 }
                 temp_attacks
             }
@@ -284,7 +285,7 @@ fn is_valid_move(bishop_magics: &[Magic;16], rook_magics: &[Magic;16], player: &
     };
     (dst & valid_attacks) != 0
 }
-fn apply_move(player: &mut Player, opponent: &mut Player, move_coord: [u32;3], bishop_magics: &[Magic;16], rook_magics: &[Magic;16]) -> bool {
+pub fn apply_move(player: &mut Player, opponent: &mut Player, move_coord: [u32;3], bishop_magics: &[Magic;16], rook_magics: &[Magic;16]) -> bool {
     let is_piece_on = player.is_piece_on(move_coord[0] as usize);
     if is_piece_on && is_valid_move(bishop_magics, rook_magics, &player, &opponent, move_coord[0] as usize, move_coord[1], move_coord[2]) {
         player.set_piece(move_coord[0] as usize, move_coord[2]);
@@ -300,7 +301,7 @@ fn apply_move(player: &mut Player, opponent: &mut Player, move_coord: [u32;3], b
         return false
     };
 }
-fn apply_move_algebraic(player: &mut Player, opponent: &mut Player, algebraic_move: &str, bishop_magics: &[Magic;16], rook_magics: &[Magic;16]) -> bool {
+pub fn apply_move_algebraic(player: &mut Player, opponent: &mut Player, algebraic_move: &str, bishop_magics: &[Magic;16], rook_magics: &[Magic;16]) -> bool {
     let move_coord = match player.convert_algebraic_to_coord(algebraic_move) {
         Some(coord) => coord,
         None => {
@@ -339,9 +340,9 @@ fn negamax(depth: u32, player: &mut Player, opponent: &mut Player, alpha: i32, b
     }
     -value
 }
-fn get_best_move(depth: u32, player: &Player, opponent: &Player, bishop_magics: &[Magic;16], rook_magics: &[Magic;16]) -> [u32;3] {
+pub fn get_best_move(depth: u32, player: &Player, opponent: &Player, bishop_magics: &[Magic;16], rook_magics: &[Magic;16]) -> [u32;3] {
     let mut best_move: [u32;3] = [4, 0, 0];
-    let mut best_value = -1002;
+    let mut best_value = -10000;
     let alpha = -1001;
     let beta = 1001;
     for m in get_possible_moves(&player, &opponent, bishop_magics, rook_magics) {
@@ -357,7 +358,6 @@ fn get_best_move(depth: u32, player: &Player, opponent: &Player, bishop_magics: 
     best_move
 }
 
-
 impl Game {
     // Constructor
     pub fn new() -> Self {
@@ -371,13 +371,17 @@ impl Game {
     }
 
     // Display utilies
-    pub fn display_cli(&self) {
+    pub fn get_display_cli(&self) -> [[char;4];4] {
         let mut display_rows = [['.', '.', '.', '.'],
                                 ['.', '.', '.', '.'],
                                 ['.', '.', '.', '.'],
                                 ['.', '.', '.', '.']];
         fill_char_array_with_piece(&mut display_rows, &self.player1, "white");
         fill_char_array_with_piece(&mut display_rows, &self.player2, "black");
+        display_rows
+    }
+    pub fn display_cli(&self) {
+        let mut display_rows = self.get_display_cli();
         for (i, row) in display_rows.iter().enumerate() {
             let row_number = match i {
                 0 => 4,
