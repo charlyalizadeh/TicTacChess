@@ -90,7 +90,7 @@ impl BoardGUI {
         }
 
         // Row/Column label
-        let font = Font::from_file("fonts/InputMono-Black.ttf").unwrap();
+        let font = Font::from_file("static/fonts/InputMono-Black.ttf").unwrap();
         let mut column_label = [
             Text::new(&String::from("a"), &font, 15),
             Text::new(&String::from("b"), &font, 15),
