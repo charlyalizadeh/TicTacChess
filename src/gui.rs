@@ -90,7 +90,7 @@ impl BoardGUI {
         }
 
         // Row/Column label
-        let font = Font::from_file("static/fonts/InputMono-Black.ttf").unwrap();
+        let font = Font::from_file("src/static/fonts/InputMono-Black.ttf").unwrap();
         let mut column_label = [
             Text::new(&String::from("a"), &font, 15),
             Text::new(&String::from("b"), &font, 15),
@@ -127,7 +127,7 @@ impl BoardGUI {
         let piece_names = ["white_pawn", "white_knight", "white_bishop", "white_rook",
                            "black_pawn", "black_knight", "black_bishop", "black_rook"];
         for piece_name in piece_names.iter() {
-            textures.push(Texture::from_file(&format!("./static/pieces_sprite/{}.png", piece_name)).unwrap());
+            textures.push(Texture::from_file(&format!("src/static/pieces_sprite/{}.png", piece_name)).unwrap());
         }
         for (i, piece_name) in piece_names.iter().enumerate() {
             pieces.insert(piece_name, Sprite::with_texture(&textures[i]));
