@@ -32,7 +32,7 @@ Description:
     q: black queen
     k: black king
     p: black pawn
-    
+
 
     R: white rook
     H: white knight
@@ -123,7 +123,7 @@ magic(bishop, ...1...., ........) = ........
               ........  ........    ..1.1...
               ........  ........    .1...1..
               ........  ........    1.....1.
-              
+
 
               ........  ........    ........
               ........  .....1..    1.......
@@ -133,7 +133,7 @@ magic(bishop, ...1...., ........) = ........
               ........  ........    ..1.1...
               ........  ........    .1...1..
               ........  ........    1.....1.
-              
+
 
               ........  .......1    ........
               ........  ........    1.......
@@ -164,14 +164,14 @@ For example let's take the following board with a bishop on d4 (`1` denotes a pi
 On this board the only relevant pieces in order to get the bishops moves are the ones on its diagonals, i.e:
 
 ```
-8 .......1 
-7 1.....1. 
-6 .1...1.. 
-5 ..1.1... 
-4 ........ 
-3 ..1.1... 
-2 .1...1.. 
-1 1.....1. 
+8 .......1
+7 1.....1.
+6 .1...1..
+5 ..1.1...
+4 ........
+3 ..1.1...
+2 .1...1..
+1 1.....1.
   abcdefgh
 ```
 
@@ -200,7 +200,7 @@ magic(bishop, ...1...., ........) = ........
               ........  ........    ..1.1...
               ........  ........    .1...1..
               ........  ........    1.....1.
-              
+
 
               ........  ........    ........
               ........  ........    1.......
@@ -247,7 +247,7 @@ One magic bitboard corresponds to one piece at one position. A magic bitboard is
 
 * **A magic number**: which is a 64-bits integer
 * **A database** (array) containing all the possible move for a specific piece at a specific position.
-* **The shift** which is a integer inferior to 64
+* **The shift** which is an integer inferior to 64
 
 With those three components we can retrieve the moves for a piece thanks to the following formula (using C++ notation):
 
@@ -275,7 +275,7 @@ Let's take our bishop in d4:
 1 .1....11
   abcdefgh
 ```
-    
+
 First we use a bit mask to get the relevant pieces:
 
 ```
@@ -336,8 +336,8 @@ Pseudo code of the algorithm used to find magic bitboard:
 
 ![](./images/find_magic)
 
-Again there's a lot going on here so let's break it down.   
-First we find all the possible setup of blockers of a the given piece at ts given position. Then we need to know on how many bits the index given after multiplying by the magic and shifting will coded, this is given by `log2(number of blockers possition) + 1`, note that `log2` gives a float output, in order to be sure that we have enough place for all the possible moves of blockers we add 1 to this value and then remove the decimal part (ex: `log2(5) = 2.3219` so the `bits = 3` and we're sure to have enough place for all the moves). We then initialize `database` and `magic` to default value. `failed` is a boolean that is set to `true` if the magic currently tested is not valid.
+Again there's a lot going on here so let's break it down.
+First we find all the possible setup of blockers of the given piece and position. Then we need to know on how many bits the index given after multiplying by the magic and shifting will be coded. It's `log2(number of blockers possition) + 1`, note that `log2` gives a float output, in order to be sure that we have enough place for all the possible moves of blockers we add 1 to this value and then remove the decimal part (ex: `log2(5) = 2.3219` so the `bits = 3` and we're sure to have enough place for all the moves). We then initialize `database` and `magic` to default values. `failed` is a boolean that is set to `true` if the magic currently tested is not valid.
 
 In the loop part we test all the possible block boards and check if the current `magic` is valid. A `magic` number is valid for a given block board if at the iteration we test the block board in the `for` loop the `database` array at the index `board * magic >> (64 - bits)` is either 0 or the corresponding move board.
 

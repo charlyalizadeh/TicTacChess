@@ -1,7 +1,7 @@
 # Bitboard representation
 
 A bitboard is an integer representing a board. In regular chess a board has a dimension of `8 * 8 = 64` which is, when we think about it, kind of a big coincidence with the fact that modern computer are based of 64 bits processors. In a bitboard integer, when a bit is set at the index `n` it means that a piece occupies this square.
-In the following board an upper letter represents a white piece and a lower letter a black piece, next to it you can see a bitboard representing its occupancy (meaning that we can only retrieve information about wether a square is occupied or not but not by which piece).
+In the following board an upper letter represents a white piece and a lower letter a black piece, next to it you can see a bitboard representing its occupancy (meaning that we can only retrieve information about whether a square is occupied or not but not by which piece).
 ```
  ┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓
 8┃   ┃   ┃   ┃   ┃   ┃   ┃   ┃   ┃
@@ -34,7 +34,7 @@ In the following board an upper letter represents a white piece and a lower lett
 Begginging of the integer-->00000000    
 ```
 
-To store all the information about a board we acutally need multiple bitboards, one for each piece type/color.
+To store all the information about a board we actually need multiple bitboards, one for each piece type/color.
 
 In the case of TicTacChess we doesn't need a full 64 integer to represent a 4x4 board. Our board has 16 squares but we cannot use a 16 bits integer, indeed when computing if four pieces are aligned we use bitshifting and AND operator like so:
 ```
